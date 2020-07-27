@@ -30,6 +30,13 @@ Criar Model com uma migration relacionada com métodos *up* e *down* já preench
 php artisan make:model ModelName -m
 ```
 
+#
+
+Criar Model e Controller com todos os resources com a migration
+```bash
+php artisan make:model ModelName -rm
+```
+
 ## Métodos Up e Down
 São os métodos que serão executados quando acionar os comandos de migrate. O método *down* será sempre um comando contrário do método *up*, ou seja, um **rollback**
 
@@ -60,9 +67,45 @@ public function down()
 }
 ```
 
-# Executando Migrations
+## Relacionamentos
+
+Para criar um relacionamento entre tabelas com as Foreign Keys, use o comando dentro do método *up*
+```php
+$table->unsignedInteger('columnName');
+$table->foreign('columnName')->references('columnReference')->on('tableReference');
+```
+Pode ser também utilizado o ONDELETE ou ONUPDATE como CASCADE
+```php
+$table->unsignedInteger('columnName');
+$table->foreign('columnName')->references('columnReference')->on('tableReference')->onDelete('cascade')->onUpdated('cascade');
+```
+
+## Executando Migrations
 
 Executar todas as migrations que não não foram executadas
 ```bash
 php artisan migrate
+```
+
+#
+
+Fazer rollback das migrates já executadas. O parâmetro **--step** indica quando passos eu devo voltar nas migrates
+O rollback executa os métodos *down* de cada migrate
+```bash
+php artisan migrate:rollback --step=3
+```
+
+#
+
+Para fazer o rollback de todas as migrates, basta exeuctar o comando sem o parametro **step**
+```bash
+php artisan migrate:rollback
+```
+
+#
+
+Existe a possibilidade de fazer o **refresh**, onde é executado todos os métodos *up* e *down* na ordem
+Pode-se utilizar ou não o parâmetro **step**
+```bash
+php artisan migrate:refresh --step=1
 ```
